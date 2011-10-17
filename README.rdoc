@@ -42,8 +42,8 @@ Send fluent-event as message to amazon SNS.
 
 == TODO
 === More configuration
- E-Mail formatter
- buffer-output
+- E-Mail formatter
+- buffer-output
 
 == Tool
 
