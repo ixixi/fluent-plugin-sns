@@ -17,7 +17,8 @@ module Fluent
 
         config_param :sns_topic_name, :string
         config_param :sns_subject_key, :string, :default => nil
-        config_param :sns_subject, :stringtring, :default => nil
+        config_param :sns_subject, :string, :default => nil
+        config_param :sns_endpoint, :string, :default => 'sns.ap-northeast-1.amazonaws.com'
 
         def configure(conf)
             super
@@ -25,10 +26,13 @@ module Fluent
 
         def start
             super
-            @sns = AWS::SNS.new(
+            AWS.config(
                 :access_key_id => @aws_key_id,
-                :secret_access_key => @aws_sec_key )
-            @topic = @sns.topics.create(@sns_topic_name, :subject => @subject)
+                :secret_access_key => @aws_sec_key,
+                :sns_endpoint => @sns_endpoint )
+
+            @sns = AWS::SNS.new
+            @topic = @sns.topics.create(@sns_topic_name)
         end
 
         def shutdown
@@ -37,9 +41,10 @@ module Fluent
 
         def emit(tag, es, chain)
             chain.next
-            es.each {|record|
+            es.each {|time,record|
+                record["time"] = Time.at(time).localtime
                 subject = record[@sns_subject_key] || @sns_subject  || 'Fluent-Notification'
-                msg = @topic.publish(record, :subject => subject )
+                msg = @topic.publish(record.to_json, :subject => subject )
                 $stderr.puts "published topic: #{msg}"
             }
         end
