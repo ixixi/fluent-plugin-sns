@@ -44,8 +44,7 @@ module Fluent
             es.each {|time,record|
                 record["time"] = Time.at(time).localtime
                 subject = record[@sns_subject_key] || @sns_subject  || 'Fluent-Notification'
-                msg = @topic.publish(record.to_json, :subject => subject )
-                $stderr.puts "published topic: #{msg}"
+                @topic.publish(record.to_json, :subject => subject )
             }
         end
 
