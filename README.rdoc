@@ -46,6 +46,7 @@ Send fluent-event as message to amazon SNS.
 === More configuration
 - E-Mail formatter
 - buffer-output
+- [Test] Other Notification Protcol (HTTP/HTTPS,SQS,SMS)
 
 == Tool
 
