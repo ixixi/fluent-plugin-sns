@@ -48,7 +48,7 @@ Send fluent-event as message to amazon SNS.
 - buffer-output
 
 == Test
- - Other Notification Protcol (HTTP/HTTPS,SQS,SMS)
+- Other Notification Protcol (HTTP/HTTPS,SQS,SMS)
 
 == Tool
 
