@@ -35,6 +35,7 @@ Send fluent-event as message to amazon SNS.
       # US-West (Oregon)               : sns.us-west-2.amazonaws.com
       # US-West (N.California)         : sns.us-west-1.amazonaws.com
       # EU-West (Ireland)              : sns.eu-west-1.amazonaws.com
+      # South America (São Paulo)      : sns.sa-east-1.amazonaws.com
 
       sns_subject_key {sns_subject_key}
       sns_subject {sns_subject} #constant subject
