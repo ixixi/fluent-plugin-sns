@@ -50,7 +50,7 @@ module Fluent
         
         def get_topic()
             @sns.topics.each do |topic|
-                if @sns_topic_name = topic.name
+                if @sns_topic_name == topic.name
                     return topic
                 end
             end
