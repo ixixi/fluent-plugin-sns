@@ -25,8 +25,8 @@ Send fluent-event as message to amazon SNS.
       sns_topic_name {sns_topic_name}
 
       # following attibutes are optional
-    　
-      sqs_endpoint {endpointURL}
+
+      sns_endpoint {endpointURL}
 
       ### endpoint list ###
       # Asia Pacific (Tokyo) [Default] : sns.ap-northeast-1.amazonaws.com
