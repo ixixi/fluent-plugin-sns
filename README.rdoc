@@ -54,5 +54,5 @@ Send fluent-event as message to amazon SNS.
 
 == Copyright
 
-Copyright:: Copyright (c) 2011- Yudai Odagiri
+Copyright:: Copyright (c) 2011- Yuri Odagiri
 License::   Apache License, Version 2.0
