@@ -40,6 +40,8 @@ Send fluent-event as message to amazon SNS.
       sns_subject_key {sns_subject_key}
       sns_subject {sns_subject} #constant subject
 
+      proxy http(s)://{url}:{port}
+
     </match>
 
 == TODO

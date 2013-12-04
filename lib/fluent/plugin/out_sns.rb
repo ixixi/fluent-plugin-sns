@@ -1,7 +1,7 @@
 module Fluent
     
     require 'aws-sdk'
-    
+
     class SNSOutput < Output
         
         Fluent::Plugin.register_output('sns', self)
@@ -19,6 +19,7 @@ module Fluent
         config_param :sns_subject_key, :string, :default => nil
         config_param :sns_subject, :string, :default => nil
         config_param :sns_endpoint, :string, :default => 'sns.ap-northeast-1.amazonaws.com'
+        config_param :proxy, :string, :default => ENV['HTTP_PROXY']
         
         def configure(conf)
             super
@@ -29,7 +30,8 @@ module Fluent
             AWS.config(
                        :access_key_id => @aws_key_id,
                        :secret_access_key => @aws_sec_key,
-                       :sns_endpoint => @sns_endpoint )
+                       :sns_endpoint => @sns_endpoint,
+                       :proxy_uri => @proxy)
             
             @sns = AWS::SNS.new
             @topic = get_topic
