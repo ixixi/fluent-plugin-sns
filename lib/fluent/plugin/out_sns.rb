@@ -12,8 +12,8 @@ module Fluent
         include SetTimeKeyMixin
         config_set_default :include_time_key, true
         
-        config_param :aws_key_id, :string
-        config_param :aws_sec_key, :string
+        config_param :aws_key_id, :string, :default => nil
+        config_param :aws_sec_key, :string, :default => nil
         
         config_param :sns_topic_name, :string
         config_param :sns_subject_key, :string, :default => nil
@@ -27,11 +27,14 @@ module Fluent
         
         def start
             super
-            AWS.config(
-                       :access_key_id => @aws_key_id,
-                       :secret_access_key => @aws_sec_key,
-                       :sns_endpoint => @sns_endpoint,
-                       :proxy_uri => @proxy)
+            options = {}
+            options[:sns_endpoint] = @sns_endpoint
+            options[:proxy_uri] = @proxy
+            if @aws_key_id && @aws_sec_key
+              options[:access_key_id] = @aws_key_id
+              options[:secret_access_key] = @aws_sec_key
+            end
+            AWS.config(options)
             
             @sns = AWS::SNS.new
             @topic = get_topic
