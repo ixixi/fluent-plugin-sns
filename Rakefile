@@ -7,7 +7,7 @@ begin
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "fluent-plugin-sns"
     gemspec.summary = "Amazon SNS output plugin for Fluent event collector"
-    gemspec.author = "Yudai Odagiri"
+    gemspec.author = "Yuri Odagiri"
     gemspec.email = "ixixizko@gmail.com"
     gemspec.homepage = "https://github.com/ixixi/fluent-plugin-sns"
     gemspec.has_rdoc = false
