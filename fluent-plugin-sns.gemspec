@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Yuri Odagiri"]
-  s.date = "2013-06-15"
+  s.authors = ["Yudai Odagiri"]
+  s.date = "2014-01-29"
   s.email = "ixixizko@gmail.com"
   s.extra_rdoc_files = [
     "README.rdoc"
