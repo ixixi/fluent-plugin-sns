@@ -19,10 +19,12 @@ Send fluent-event as message to amazon SNS.
 
       # following attibutes are required
 
+      sns_topic_name {sns_topic_name}
+
+      # following attibutes are required if you don't use IAM Role
+
       aws_key_id {your_aws_key_id}
       aws_sec_key {your_aws_secret_key}
-
-      sns_topic_name {sns_topic_name}
 
       # following attibutes are optional
 
