@@ -66,8 +66,8 @@ module Fluent
       chain.next
       es.each {|time,record|
         record['time'] = Time.at(time).localtime
-        body = get_body(record).force_encoding('UTF-8')
-        subject = get_subject(record).force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, '')
+        body = get_body(record).to_s.force_encoding('UTF-8')
+        subject = get_subject(record).to_s.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, '')
         @topic.publish( body, :subject => subject )
       }
     end
@@ -76,14 +76,14 @@ module Fluent
       unless @subject_template.nil?
         return @subject_template.result(binding)
       end
-      subject = record[@sns_subject_key].to_s || @sns_subject.to_s  || 'Fluentd-Notification'
+      subject = record[@sns_subject_key] || @sns_subject || 'Fluentd-Notification'
     end
 
     def get_body(record)
       unless @body_template.nil?
         return @body_template.result(binding)
       end
-      record[@sns_body_key].to_s || @sns_body.to_s || record.to_json
+      record[@sns_body_key] || @sns_body || record.to_json
     end
   end
 end
