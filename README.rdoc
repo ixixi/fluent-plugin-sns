@@ -21,10 +21,10 @@ Send fluent-event as message to amazon SNS.
 
       sns_topic_name {sns_topic_name}
 
-      # following attibutes are required if you don't use IAM Role
+      # following attibutes are required if you don't use IAM Role and you don't set environment variables
 
-      aws_key_id {your_aws_key_id}
-      aws_sec_key {your_aws_secret_key}
+      aws_key_id {your_aws_key_id}       # Default: ENV['AWS_ACCESS_KEY_ID']
+      aws_sec_key {your_aws_secret_key}  # Default: ENV['AWS_SECRET_ACCESS_KEY']
 
       # following attibutes are optional
 
@@ -39,16 +39,47 @@ Send fluent-event as message to amazon SNS.
       # EU-West (Ireland)              : sns.eu-west-1.amazonaws.com
       # South America (São Paulo)      : sns.sa-east-1.amazonaws.com
 
+      sns_subject_template {template_erb_file_path}
       sns_subject_key {sns_subject_key}
       sns_subject {sns_subject} #constant subject
+
+      sns_body_template {sns_body_template}
+      sns_body_key {sns_body_key}
 
       proxy http(s)://{url}:{port}
 
     </match>
 
+== Example
+
+=== fluentd.conf
+
+    <match sns.**>
+
+      type sns
+
+      sns_topic_name example
+      
+      sns_endpoint sns.ap-northeast-1.amazonaws.com
+
+      sns_subject_key from
+      sns_body_template /path/to/template/body_template.erb
+
+    </match>
+
+=== Example (template)
+
+/path/to/template/body_template.erb
+    hello <%= record['to'] %>!
+
+=== sample input
+
+    $ echo '{"from":'Alice',"to":"Bob" }' | fluent-cat sns.example
+
+Then, the message is published. (subject -> 'Alice', body -> 'hello Bob!')
+
 == TODO
 === More configuration
-- E-Mail formatter
 - buffer-output
 
 == Test
