@@ -67,7 +67,7 @@ Send fluent-event as message to amazon SNS.
 
     </match>
 
-=== Example (template)
+=== template
 
 /path/to/template/body_template.erb
     hello <%= record['to'] %>!
