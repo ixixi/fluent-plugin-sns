@@ -78,15 +78,6 @@ Send fluent-event as message to amazon SNS.
 
 Then, the message is published. (subject -> 'Alice', body -> 'hello Bob!')
 
-== TODO
-=== More configuration
-- buffer-output
-
-== Test
-- Other Notification Protcol (HTTP/HTTPS,SQS,SMS)
-
-== Tool
-
 == Copyright
 
 Copyright:: Copyright (c) 2011- Yuri Odagiri
