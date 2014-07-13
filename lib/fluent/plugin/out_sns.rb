@@ -12,8 +12,8 @@ module Fluent
     include SetTimeKeyMixin
     config_set_default :include_time_key, true
 
-    config_param :aws_key_id, :string, :default => ENV['AWS_ACCESS_KEY_ID']
-    config_param :aws_sec_key, :string, :default => ENV['AWS_SECRET_ACCESS_KEY']
+    config_param :aws_key_id, :string, :default => nil
+    config_param :aws_sec_key, :string, :default => nil
 
     config_param :sns_topic_name, :string
     config_param :sns_subject_template, :default => nil
