@@ -44,7 +44,7 @@ module Fluent
       @topic = @sns.topics.find{|topic| @sns_topic_name == topic.name}
 
       @subject_template = nil
-      unless @sns_body_template.nil?
+      unless @sns_subject_template.nil?
         template_file = open(@sns_subject_template)
         @subject_template = ERB.new(template_file.read)
         template_file.close
