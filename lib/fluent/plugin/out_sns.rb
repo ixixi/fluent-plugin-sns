@@ -1,6 +1,6 @@
 module Fluent
 
-  require 'aws-sdk'
+  require 'aws-sdk-v1'
 
   class SNSOutput < Output
 
