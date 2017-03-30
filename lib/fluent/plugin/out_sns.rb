@@ -1,6 +1,6 @@
 module Fluent
 
-  require 'aws-sdk-v1'
+  require 'aws-sdk'
 
   class SNSOutput < Output
 
@@ -22,7 +22,9 @@ module Fluent
     config_param :sns_body_template, :default => nil
     config_param :sns_body_key, :string, :default => nil
     config_param :sns_body, :string, :default => nil
-    config_param :sns_endpoint, :string, :default => 'sns.ap-northeast-1.amazonaws.com'
+    config_param :sns_endpoint, :string, :default => 'sns.ap-northeast-1.amazonaws.com',
+                 :obsoleted => 'Use sns_region instead'
+    config_param :sns_region, :string, :default => 'ap-northeast-1'
     config_param :proxy, :string, :default => ENV['HTTP_PROXY']
 
     def configure(conf)
@@ -32,16 +34,15 @@ module Fluent
     def start
       super
       options = {}
-      options[:sns_endpoint] = @sns_endpoint
-      options[:proxy_uri] = @proxy
+      options[:region] = @sns_region
+      options[:http_proxy] = @proxy
       if @aws_key_id && @aws_sec_key
-        options[:access_key_id] = @aws_key_id
-        options[:secret_access_key] = @aws_sec_key
+        options[:credentials] = Aws::Credentials.new(@aws_key_id, @aws_sec_key)
       end
-      AWS.config(options)
+      Aws.config.update(options)
 
-      @sns = AWS::SNS.new
-      @topic = @sns.topics.find{|topic| @sns_topic_name == topic.name}
+      @sns = Aws::SNS::Resource.new
+      @topic = @sns.topics.find{|topic| @sns_topic_name == topic.arn.split(":")[-1]}
 
       @subject_template = nil
       unless @sns_subject_template.nil?
@@ -68,7 +69,11 @@ module Fluent
         record['time'] = Time.at(time).localtime
         body = get_body(record).to_s.force_encoding('UTF-8')
         subject = get_subject(record).to_s.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, '')
-        @topic.publish( body, :subject => subject )
+
+        @topic.publish({
+          message: body,
+          subject: subject,
+        })
       }
     end
 
