@@ -43,6 +43,9 @@ module Fluent
 
       @sns = Aws::SNS::Resource.new
       @topic = @sns.topics.find{|topic| @sns_topic_name == topic.arn.split(":")[-1]}
+      if @topic.nil?
+        raise ConfigError, "No topic found for topic name #{@sns_topic_name}."
+      end
 
       @subject_template = nil
       unless @sns_subject_template.nil?
