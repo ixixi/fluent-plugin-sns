@@ -22,6 +22,8 @@ module Fluent
     config_param :sns_body_template, :default => nil
     config_param :sns_body_key, :string, :default => nil
     config_param :sns_body, :string, :default => nil
+    config_param :sns_message_attributes, :hash, :default => nil
+    config_param :sns_message_attributes_keys, :hash, :default => nil
     config_param :sns_endpoint, :string, :default => 'sns.ap-northeast-1.amazonaws.com',
                  :obsoleted => 'Use sns_region instead'
     config_param :sns_region, :string, :default => 'ap-northeast-1'
@@ -72,10 +74,12 @@ module Fluent
         record['time'] = Time.at(time).localtime
         body = get_body(record).to_s.force_encoding('UTF-8')
         subject = get_subject(record).to_s.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, '')
+        message_attributes = get_message_attributes(record)
 
         @topic.publish({
           message: body,
           subject: subject,
+          message_attributes: message_attributes,
         })
       }
     end
@@ -93,5 +97,30 @@ module Fluent
       end
       record[@sns_body_key] || @sns_body || record.to_json
     end
+
+    def get_message_attributes(record)
+      message_attributes = {}
+
+      if @sns_message_attributes_keys
+        @sns_message_attributes_keys.each_pair do |attribute, key|
+          value = record[key]
+          if value
+            message_attributes[attribute] = {
+              data_type: "String",
+              string_value: value,
+            }
+          end
+        end
+      elsif @sns_message_attributes
+        @sns_message_attributes.each_pair do |attribute, value|
+          message_attributes[attribute] = {
+            data_type: "String",
+            string_value: value,
+          }
+        end
+      end
+      return message_attributes
+    end
+
   end
 end

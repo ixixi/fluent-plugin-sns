@@ -39,6 +39,12 @@ Send fluent-event as message to amazon SNS.
       sns_body_template {sns_body_template}
       sns_body_key {sns_body_key}
 
+      # SNS Message attributes:
+      # http://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html
+      # Note that currently only string values are supported.
+      sns_message_attributes {attribute: string_value}
+      sns_message_attributes_keys {attribute: key_in_record_with_string_value}
+
       proxy http(s)://{url}:{port}
 
     </match>
@@ -52,7 +58,7 @@ Send fluent-event as message to amazon SNS.
       type sns
 
       sns_topic_name example
-      
+
       sns_endpoint sns.ap-northeast-1.amazonaws.com
 
       sns_subject_key from
