@@ -28,16 +28,9 @@ Send fluent-event as message to amazon SNS.
 
       # following attibutes are optional
 
-      sns_endpoint {endpointURL}
-
-      ### endpoint list ###
-      # Asia Pacific (Tokyo) [Default] : sns.ap-northeast-1.amazonaws.com
-      # Asia Pacific (Singapore)       : sns.ap-southeast-1.amazonaws.com
-      # US-East (Virginia)             : sns.us-east-1.amazonaws.com
-      # US-West (Oregon)               : sns.us-west-2.amazonaws.com
-      # US-West (N.California)         : sns.us-west-1.amazonaws.com
-      # EU-West (Ireland)              : sns.eu-west-1.amazonaws.com
-      # South America (São Paulo)      : sns.sa-east-1.amazonaws.com
+      # AWS region (defaults to 'ap-northeast-1'), for a list of all available
+      # regions see: http://docs.aws.amazon.com/general/latest/gr/rande.html#sns_region
+      sns_region {region}
 
       sns_subject_template {template_erb_file_path}
       sns_subject_key {sns_subject_key}
@@ -45,6 +38,12 @@ Send fluent-event as message to amazon SNS.
 
       sns_body_template {sns_body_template}
       sns_body_key {sns_body_key}
+
+      # SNS Message attributes:
+      # http://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html
+      # Note that currently only string values are supported.
+      sns_message_attributes {attribute: string_value}
+      sns_message_attributes_keys {attribute: key_in_record_with_string_value}
 
       proxy http(s)://{url}:{port}
 
@@ -59,7 +58,7 @@ Send fluent-event as message to amazon SNS.
       type sns
 
       sns_topic_name example
-      
+
       sns_endpoint sns.ap-northeast-1.amazonaws.com
 
       sns_subject_key from
