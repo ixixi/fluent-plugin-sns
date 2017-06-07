@@ -1,3 +1,6 @@
+require 'fluent/output'
+
+
 module Fluent
 
   require 'aws-sdk'
