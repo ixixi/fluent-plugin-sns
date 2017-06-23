@@ -1,18 +1,14 @@
-require 'fluent/output'
+require 'fluent/plugin/output'
+require 'aws-sdk'
 
-
-module Fluent
-
-  require 'aws-sdk'
-
+module Fluent::Plugin
   class SNSOutput < Output
 
     Fluent::Plugin.register_output('sns', self)
 
-    include SetTagKeyMixin
-    config_set_default :include_tag_key, false
+    helpers :compat_parameters, :inject
 
-    include SetTimeKeyMixin
+    config_set_default :include_tag_key, false
     config_set_default :include_time_key, true
 
     config_param :aws_key_id, :string, :default => nil, :secret => true
@@ -33,6 +29,7 @@ module Fluent
     config_param :proxy, :string, :default => ENV['HTTP_PROXY']
 
     def configure(conf)
+      compat_parameters_convert(conf, :inject)
       super
     end
 
@@ -71,10 +68,10 @@ module Fluent
       super
     end
 
-    def emit(tag, es, chain)
-      chain.next
+    def process(tag, es)
       es.each {|time,record|
         record['time'] = Time.at(time).localtime
+        record = inject_values_to_record(tag, time, record)
         body = get_body(record).to_s.force_encoding('UTF-8')
         subject = get_subject(record).to_s.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, '')
         message_attributes = get_message_attributes(record)

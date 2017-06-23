@@ -12,7 +12,7 @@ begin
     gemspec.homepage = "https://github.com/ixixi/fluent-plugin-sns"
     gemspec.has_rdoc = false
     gemspec.require_paths = ["lib"]
-    gemspec.add_dependency "fluentd", ">= 0.10.0", "< 2"
+    gemspec.add_dependency "fluentd", ">= 0.14.0", "< 2"
     gemspec.add_dependency "aws-sdk", "~> 2"
     gemspec.test_files = Dir["test/**/*.rb"]
     gemspec.files = Dir["lib/**/*", "test/**/*.rb"] + %w[VERSION AUTHORS Rakefile]
