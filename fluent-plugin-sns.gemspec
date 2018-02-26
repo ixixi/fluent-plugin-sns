@@ -31,14 +31,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<fluentd>, ["< 2", ">= 0.10.0"])
-      s.add_runtime_dependency(%q<aws-sdk>, ["~> 2"])
+      s.add_runtime_dependency(%q<aws-sdk>, ["~> 3"])
     else
       s.add_dependency(%q<fluentd>, ["< 2", ">= 0.10.0"])
-      s.add_dependency(%q<aws-sdk>, ["~> 2"])
+      s.add_dependency(%q<aws-sdk>, ["~> 3"])
     end
   else
     s.add_dependency(%q<fluentd>, ["< 2", ">= 0.10.0"])
-    s.add_dependency(%q<aws-sdk>, ["~> 2"])
+    s.add_dependency(%q<aws-sdk>, ["~> 3"])
   end
 end
 
