@@ -32,38 +32,48 @@ module Fluent
     config_param :sns_region, :string, :default => 'ap-northeast-1'
     config_param :proxy, :string, :default => ENV['HTTP_PROXY']
 
+    config_param :graceful, :bool, :default => false
+
     def configure(conf)
       super
     end
 
     def start
       super
-      options = {}
-      options[:region] = @sns_region
-      options[:http_proxy] = @proxy
-      if @aws_key_id && @aws_sec_key
-        options[:credentials] = Aws::Credentials.new(@aws_key_id, @aws_sec_key)
-      end
-      Aws.config.update(options)
+      begin
+        options = {}
+        options[:region] = @sns_region
+        options[:http_proxy] = @proxy
+        if @aws_key_id && @aws_sec_key
+          options[:credentials] = Aws::Credentials.new(@aws_key_id, @aws_sec_key)
+        end
+        Aws.config.update(options)
 
-      @sns = Aws::SNS::Resource.new
-      @topic = @sns.topics.find{|topic| @sns_topic_name == topic.arn.split(":")[-1]}
-      if @topic.nil?
-        raise ConfigError, "No topic found for topic name #{@sns_topic_name}."
-      end
+        @sns = Aws::SNS::Resource.new
+        @topic = @sns.topics.find{|topic| @sns_topic_name == topic.arn.split(":")[-1]}
+        if @topic.nil?
+          raise ConfigError, "No topic found for topic name #{@sns_topic_name}."
+        end
 
-      @subject_template = nil
-      unless @sns_subject_template.nil?
-        template_file = open(@sns_subject_template)
-        @subject_template = ERB.new(template_file.read)
-        template_file.close
-      end
+        @subject_template = nil
+        unless @sns_subject_template.nil?
+          template_file = open(@sns_subject_template)
+          @subject_template = ERB.new(template_file.read)
+          template_file.close
+        end
 
-      @body_template = nil
-      unless @sns_body_template.nil?
-        template_file = open(@sns_body_template)
-        @body_template = ERB.new(template_file.read)
-        template_file.close
+        @body_template = nil
+        unless @sns_body_template.nil?
+          template_file = open(@sns_body_template)
+          @body_template = ERB.new(template_file.read)
+          template_file.close
+        end
+      rescue => e
+        if @graceful
+          $log.error e.message
+          return
+        end
+        raise
       end
     end
 
@@ -73,18 +83,26 @@ module Fluent
 
     def emit(tag, es, chain)
       chain.next
-      es.each {|time,record|
-        record['time'] = Time.at(time).localtime
-        body = get_body(record).to_s.force_encoding('UTF-8')
-        subject = get_subject(record).to_s.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, '')
-        message_attributes = get_message_attributes(record)
+      begin
+        es.each {|time,record|
+          record['time'] = Time.at(time).localtime
+          body = get_body(record).to_s.force_encoding('UTF-8')
+          subject = get_subject(record).to_s.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, '')
+          message_attributes = get_message_attributes(record)
 
-        @topic.publish({
-          message: body,
-          subject: subject,
-          message_attributes: message_attributes,
-        })
-      }
+          @topic.publish({
+            message: body,
+            subject: subject,
+            message_attributes: message_attributes,
+          })
+        }
+      rescue => e
+        if @graceful
+          $log.error e.message
+          return
+        end
+        raise
+      end
     end
 
     def get_subject(record)
