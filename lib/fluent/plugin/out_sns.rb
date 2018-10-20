@@ -1,10 +1,7 @@
 require 'fluent/output'
-
+require 'aws-sdk-sns'
 
 module Fluent
-
-  require 'aws-sdk'
-
   class SNSOutput < Output
 
     Fluent::Plugin.register_output('sns', self)
